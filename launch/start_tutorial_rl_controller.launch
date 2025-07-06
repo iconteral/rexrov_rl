@@ -1,0 +1,21 @@
+<launch>
+    <arg name="uuv_name" default="rexrov"/>
+    <arg name="model_name" default="$(arg uuv_name)"/>
+
+    <arg name="epsilon" default="0.1"/>
+    <arg name="alpha" default="0.01"/>
+    <arg name="gamma" default="0.9"/>
+    <arg name="max_effort" default="1000"/>
+
+    <group ns="$(arg uuv_name)">
+        <node pkg="uuv_tutorial_rl_controller"
+              type="tutorial_rl_controller.py"
+              name="tutorial_rl_controller"
+              output="screen">
+            <param name="epsilon" value="$(arg epsilon)"/>
+            <param name="alpha" value="$(arg alpha)"/>
+            <param name="gamma" value="$(arg gamma)"/>
+            <param name="max_effort" value="$(arg max_effort)"/>
+        </node>
+    </group>
+</launch>

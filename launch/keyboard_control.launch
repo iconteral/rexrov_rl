@@ -1,0 +1,38 @@
+<launch>
+    <arg name="uuv_name" default="rexrov"/>
+    <arg name="model_name" default="$(arg uuv_name)"/>
+    
+    <arg name="max_effort" default="1000.0"/>
+
+    <include file="$(find uuv_gazebo_worlds)/launch/ocean_waves.launch"/>
+    <include file="$(find uuv_descriptions)/launch/upload_rexrov.launch">
+        <arg name="x" default="20"/>
+        <arg name="y" default="0"/>
+        <arg name="z" default="-20"/>
+        <arg name="yaw" default="0"/>
+    </include>
+
+    <include file="$(find uuv_thruster_manager)/launch/thruster_manager.launch">
+        <arg name="uuv_name" value="$(arg uuv_name)"/>
+        <arg name="model_name" value="$(arg model_name)"/>
+        <arg name="output_dir" value="$(find uuv_thruster_manager)/config/$(arg model_name)"/>
+        <arg name="config_file" value="$(find uuv_thruster_manager)/config/$(arg model_name)/thruster_manager.yaml"/>
+        <arg name="tam_file" value="$(find uuv_thruster_manager)/config/$(arg model_name)/TAM.yaml"/>
+    </include>thruster_manager
+
+    <group ns="$(arg uuv_name)">
+        <node pkg="uuv_tutorial_rl_controller"
+            type="keyboard_dp_controller.py"
+            name="keyboard_dp_controller"
+            output="screen">
+            <remap from="odom" to="pose_gt"/>
+            <remap from="thruster_output" to="thruster_manager/input_stamped"/>
+            <rosparam>
+                saturation: $(arg saturation)
+            </rosparam>
+        </node>
+    </group>
+
+    <node name="rviz" pkg="rviz" type="rviz" output="screen"
+          args="-d $(find uuv_gazebo)/rviz/controller_demo.rviz"/>
+</launch>

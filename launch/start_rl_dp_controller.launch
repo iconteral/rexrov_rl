@@ -1,0 +1,32 @@
+<launch>
+  <arg name="uuv_name"/>
+  <arg name="model_name" default="$(arg uuv_name)"/>
+  <arg name="saturation" default="1000"/>
+  <arg name="model_path" default="$(find uuv_tutorial_rl_controller)/models/ppo_model.zip"/>
+
+  <arg name="output_dir" default="$(find uuv_thruster_manager)/config/$(arg model_name)"/>
+  <arg name="config_file" default="$(find uuv_thruster_manager)/config/$(arg model_name)/thruster_manager.yaml"/>
+  <arg name="tam_file" default="$(find uuv_thruster_manager)/config/$(arg model_name)/TAM.yaml"/>
+
+  <include file="$(find uuv_thruster_manager)/launch/thruster_manager.launch">
+      <arg name="uuv_name" value="$(arg uuv_name)"/>
+      <arg name="model_name" value="$(arg model_name)"/>
+      <arg name="output_dir" value="$(arg output_dir)"/>
+      <arg name="config_file" value="$(arg config_file)"/>
+      <arg name="tam_file" value="$(arg tam_file)"/>
+  </include>
+
+  <group ns="$(arg uuv_name)">
+    <node pkg="uuv_tutorial_rl_controller"
+          type="rl_dp_controller.py"
+          name="rl_dp_controller"
+          output="screen">
+        <remap from="odom" to="pose_gt"/>
+        <remap from="thruster_output" to="thruster_manager/input_stamped"/>
+        <rosparam subst_value="true">
+            max_force: $(arg saturation)
+            model_path: $(arg model_path)
+        </rosparam>
+    </node>
+  </group>
+</launch>
