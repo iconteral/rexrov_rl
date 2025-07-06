@@ -5,7 +5,7 @@ from stable_baselines3 import PPO
 from gym import spaces
 import numpy as np
 import rospy
-from uuv_control_interfaces import DPControllerBase
+# from uuv_control_interfaces import DPControllerBase
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import WrenchStamped
 from std_srvs.srv import Empty
@@ -88,6 +88,7 @@ class ROVEnv(gym.Env):
         tau = action * 1000.0
         # 发布控制指令
         wrench_msg = WrenchStamped()
+        # wrench_msg.wrench.force.x = 1000
         wrench_msg.wrench.force.x = tau[0]
         wrench_msg.wrench.force.y = tau[1]
         wrench_msg.wrench.force.z = tau[2]
@@ -95,8 +96,6 @@ class ROVEnv(gym.Env):
         wrench_msg.wrench.torque.y = tau[4]
         wrench_msg.wrench.torque.z = tau[5]
         # print("publish ",msg)
-        # self._thruster_pub.publish(msg)
-
         # print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxSTEPxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
         # print(wrench_msg)
         self.wrench_pub.publish(wrench_msg)
@@ -104,7 +103,7 @@ class ROVEnv(gym.Env):
         # Wait for the next state to be received
         rospy.sleep(0.1)
 
-        # Calculate the reward
+        # Calculate the rewardodom
         reward = self.calculate_reward()
 
         # Check if the episode is done
@@ -134,7 +133,7 @@ class ROVEnv(gym.Env):
         pos_error = np.linalg.norm(self.current_state[:3] - self.target_position)
         print("pos_err==",pos_error)
         print("pos_sta==",self.current_state[:3])
-        if pos_error > 20:
+        if pos_error > 2:
             print("DONE: ",pos_error)
             return True
         return False

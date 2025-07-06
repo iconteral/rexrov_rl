@@ -24,7 +24,7 @@
     </include>
 
     <group ns="$(arg uuv_name)">
-        <node pkg="uuv_tutorial_rl_controller"
+        <node pkg="rexrov_rl"
               type="tutorial_rl_controller.py"
               name="tutorial_rl_controller"
               output="screen"

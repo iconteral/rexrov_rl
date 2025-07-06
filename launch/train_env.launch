@@ -4,7 +4,7 @@
 
     <include file="$(find uuv_gazebo_worlds)/launch/ocean_waves.launch"/>
     <include file="$(find uuv_descriptions)/launch/upload_rexrov.launch">
-        <arg name="x" default="20"/>
+        <arg name="x" default="0"/>
         <arg name="y" default="0"/>
         <arg name="z" default="-20"/>
         <arg name="yaw" default="0"/>
@@ -19,7 +19,7 @@
     </include>thruster_manager
 
     <group ns="$(arg uuv_name)">
-        <node pkg="uuv_tutorial_rl_controller"
+        <node pkg="rexrov_rl"
             type="rov_ppo_training.py"
             name="rov_ppo_training"
             output="screen"

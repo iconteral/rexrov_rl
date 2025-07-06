@@ -2,6 +2,7 @@
 import rospy
 import numpy as np
 import sys, select, termios, tty, threading
+from nav_msgs.msg import Odometry
 from uuv_control_interfaces import DPControllerBase
 
 key_mapping = {
@@ -17,10 +18,11 @@ key_mapping = {
 force_magnitude = 1000.0
 
 class KeyboardDPController(DPControllerBase):
-    def __init__(self):
+    def __init__(self, uuv_name = "rexrov"):
         super(KeyboardDPController, self).__init__(self)
         self._tau = np.zeros(6)
         self._is_init = True
+        self.uuv_name = uuv_name
         # The current state of the ROV
         self.current_state = None
         self.odom_sub = rospy.Subscriber(f'/{self.uuv_name}/pose_gt', Odometry, self.odom_callback)
@@ -48,6 +50,19 @@ class KeyboardDPController(DPControllerBase):
         else:
             rospy.loginfo("Unrecognized key: %s" % key)
 
+    def odom_callback(self, msg):
+        """Callback function for the odometry subscriber"""
+        pos = msg.pose.pose.position
+        orient = msg.pose.pose.orientation
+        lin_vel = msg.twist.twist.linear
+        ang_vel = msg.twist.twist.angular
+        print("GETTING ODOM ",pos)
+        self.current_state = np.array([
+            pos.x, pos.y, pos.z,
+            orient.x, orient.y, orient.z, orient.w,
+            lin_vel.x, lin_vel.y, lin_vel.z,
+            ang_vel.x, ang_vel.y, ang_vel.z
+        ])
 
 def keyboard_thread(ctrl):
     settings = termios.tcgetattr(sys.stdin)

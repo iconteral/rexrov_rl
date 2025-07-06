@@ -21,7 +21,7 @@
     </include>thruster_manager
 
     <group ns="$(arg uuv_name)">
-        <node pkg="uuv_tutorial_rl_controller"
+        <node pkg="rexrov_rl"
             type="keyboard_dp_controller.py"
             name="keyboard_dp_controller"
             output="screen">
