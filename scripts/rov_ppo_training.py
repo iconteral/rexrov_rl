@@ -131,10 +131,10 @@ class ROVEnv(gym.Env):
         """Check if the episode has ended"""
         # The episode ends if the ROV goes too far from the target
         pos_error = np.linalg.norm(self.current_state[:3] - self.target_position)
-        print("pos_err==",pos_error)
-        print("pos_sta==",self.current_state[:3])
+        # print("pos_err==",pos_error)
+        # print("pos_sta==",self.current_state[:3])
         if pos_error > 2:
-            print("DONE: ",pos_error)
+            # print("DONE: ",pos_error)
             return True
         return False
 
@@ -179,6 +179,6 @@ if __name__ == '__main__':
         # tensorboard_log="~/ppo_rov_logs"
     )
     callback = PrintProgressCallback(print_freq=50)
-    model.learn(total_timesteps=10_000, callback=callback)
+    model.learn(total_timesteps=100000, callback=callback)
     print("保存模型为 ppo_rov_controller.zip")
     model.save(model_save_path) # 使用绝对路径
