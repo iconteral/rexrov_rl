@@ -56,7 +56,8 @@ class KeyboardDPController(DPControllerBase):
         orient = msg.pose.pose.orientation
         lin_vel = msg.twist.twist.linear
         ang_vel = msg.twist.twist.angular
-        print("GETTING ODOM ",pos)
+        # print("GETTING ODOM ",pos)
+        rospy.loginfo_throttle(1.0, pos)
         self.current_state = np.array([
             pos.x, pos.y, pos.z,
             orient.x, orient.y, orient.z, orient.w,

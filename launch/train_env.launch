@@ -29,6 +29,6 @@
         </node>
     </group>
 
-    <node name="rviz" pkg="rviz" type="rviz" output="screen"
-          args="-d $(find uuv_gazebo)/rviz/controller_demo.rviz"/>
+    <!-- <node name="rviz" pkg="rviz" type="rviz" output="screen"
+          args="-d $(find uuv_gazebo)/rviz/controller_demo.rviz"/> -->
 </launch>
